@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Post, PostFile
+from .models import Post, PostFile, Category
+from mptt.admin import MPTTModelAdmin
+
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -9,8 +11,14 @@ class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     raw_id_fields = ('author',)
     date_hierarchy = 'publish'
-    ordering = ('status', 'publish')    
+    ordering = ('status', 'publish')
+
 
 @admin.register(PostFile)
 class PostFile(admin.ModelAdmin):
-    list_display = ('file',)    
+    list_display = ('file',)
+
+
+@admin.register(Category)
+class CategoryAdmin(MPTTModelAdmin):
+    prepopulated_fields = {"slug": ("title",)}
