@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -39,11 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.sitemaps',
-
-    'ckeditor', 
-    'ckeditor_uploader', 
+    'ckeditor',
+    'ckeditor_uploader',
     'taggit',
-
+    'mptt',
     'blog',
     'users',
 ]
@@ -78,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blog_notes.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -90,7 +87,7 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = (
-    #'django.contrib.auth.backends.ModelBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
     'users.services.auth_for_email.EmailAuthBackend',
 )
 
@@ -98,7 +95,6 @@ AUTHENTICATION_BACKENDS = (
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = []
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -120,7 +116,7 @@ LOGIN_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
 
-#this code
+# this code
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
@@ -131,12 +127,12 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media/"
-#ckeditor upload path
-CKEDITOR_UPLOAD_PATH="uploads/"
+# ckeditor upload path
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {
     'default': {
-     
+
         # 'skin': 'moono',
         # # 'skin': 'office2013',
         # 'toolbar_Basic': [
@@ -158,7 +154,8 @@ CKEDITOR_CONFIGS = {
                        'Language']},
             {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
             {'name': 'insert',
-             'items': ['Image', 'Youtube','Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe']},
+             'items': ['Image', 'Youtube', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak',
+                       'Iframe']},
             '/',
             {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
             {'name': 'colors', 'items': ['TextColor', 'BGColor']},
@@ -174,7 +171,7 @@ CKEDITOR_CONFIGS = {
             ]},
         ],
         'toolbar': 'Custom',  # put selected toolbar config here
-        'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
+        'toolbarGroups': [{'name': 'document', 'groups': ['mode', 'document', 'doctools']}],
         'height': 400,
         # 'width': '100%',
         'filebrowserWindowHeight': 725,
@@ -183,7 +180,7 @@ CKEDITOR_CONFIGS = {
         'mathJaxLib': '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
         'tabSpaces': 4,
         'extraPlugins': ','.join([
-            'uploadimage', # the upload image feature
+            'uploadimage',  # the upload image feature
             # your extra plugins here
             'div',
             'autolink',
