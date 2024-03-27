@@ -9,7 +9,8 @@
     <title>Журнал{% block title %}{% endblock title %}</title>
 
     <!-- Bootstrap CSS -->
-    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet"> <!-- integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">-->
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <!-- integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">-->
 
     <!-- static file -->
     <link href="{% static "css/style.css" %}" rel="stylesheet">
@@ -17,39 +18,43 @@
     <link rel="stylesheet" href="{% static "css/monokai-sublime.min.css" %}">
     <script src="{% static "js/highlight.min.js" %}"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    {% block static%}{%endblock%}
+    {% block static %}{% endblock %}
 
 </head>
 <body>
-  <div class="main">
-    {% block sidebar %}
-    <div class="sidebar border-end">
-      <div class="title">
-        <h1>Здесь будет Навигация</h1>
-      </div>
-    </div>
-    {% endblock %}
+<div class="main">
+    {% block sidebar %} {% endblock %}
+{#        <div class="sidebar border-end">#}
+{#            <div class="title">#}
+{#                <h1>Здесь будет Навигация</h1>#}
+{#            </div>#}
+{#        </div>#}
+
     <div class="content">
-      {%block navbar%}
-      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-        <div class="container">
-          <a class="navbar-brand" href="/">Журнал заметок</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <!-- <li class="nav-item">
-                  <a class="nav-link {% if request.path == '/tag/SZV-TD/' %}active{% endif %}" aria-current="page" href="{{ request.scheme }}://{{ request.get_host }}/tag/SZV-TD/">test</a>
+        {% block navbar %}
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container">
+                    <a class="navbar-brand" href="/">Журнал заметок</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <!-- <li class="nav-item">
+                  <a class="nav-link {% if request.path == '/tag/SZV-TD/' %}
+                                active{% endif %}" aria-current="page" href="{{ request.scheme }}://{{ request.get_host }}/tag/SZV-TD/">test</a>
                 </li> -->
-{#                <li class="nav-item">#}
-{#                    <a class="nav-link aria-current="page" href="http://10.101.19.57:8000/tag/resend/">Переотправка/Перезапуск</a>#}
-{#                </li> #}
-                  <!-- <li class="nav-item">
-                      <a class="nav-link aria-current="page" href="http://10.101.19.57:8000/tag/53.13/">53.13</a>
-                    </li>           -->
-                <!-- <li class="nav-item">
-                  <a class="nav-link {% if request.path == '/tag/Resend/' %}active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/Resend/">Переотправки</a>
+                            {#                <li class="nav-item">#}
+                            {#                    <a class="nav-link aria-current="page" href="http://10.101.19.57:8000/tag/resend/">Переотправка/Перезапуск</a>#}
+                            {#                </li> #}
+                            <!-- <li class="nav-item">
+                                <a class="nav-link aria-current="page" href="http://10.101.19.57:8000/tag/53.13/">53.13</a>
+                              </li>           -->
+                            <!-- <li class="nav-item">
+                  <a class="nav-link {% if request.path == '/tag/Resend/' %}
+                                active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/Resend/">Переотправки</a>
                 </li>
 
               
@@ -59,50 +64,53 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li>
-                    <a class="dropdown-item {% if request.path == '/tag/53.13/' %}active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/53.13/">53.13</a>
+                    <a class="dropdown-item {% if request.path == '/tag/53.13/' %}
+                                active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/53.13/">53.13</a>
                   </li>
                   
                   <li>
-                    <a class="dropdown-item {% if request.path == '/tag/Resend/' %}active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/Resend/">Переотправки</a>
+                    <a class="dropdown-item {% if request.path == '/tag/Resend/' %}
+                                active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/Resend/">Переотправки</a>
                   </li>
                 
                 </ul>
               </li> -->
-      
-            </ul>
-            <form class="d-flex" action="/">
-                <input class="form-control mr-0" type="search" value="{{request.GET.q}}" name="q" placeholder="Поиск" aria-label="Search">
-            </form>
-            {% if request.user.is_authenticated %}
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link aria-current='page'" href="{% url 'users:logout' %}">Выйти</a>
-                </li>
-              </ul>
-            {% else %}
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link aria-current='page'" href="{% url 'users:login' %}">Войти</a>
-                </li>
-              </ul>
-            {%endif%}
-          </div>
-        </div>
-      </nav>      
-      <div class="breadcrumb border-bottom">Здесь / будут / хлебные / крошки</div>
-      {%endblock%}
-      <main class="container"> 
-          <!-- from here to -->
-          <h4 class="my-3">
-              {% if request.GET.q is not null %}
-                  Результат поиска по "{{ request.GET.q }}"
-              {% endif %}
-          </h4>
-          {% block content %}{% endblock content %}
-      </main>
+
+                        </ul>
+                        <form class="d-flex" action="/">
+                            <input class="form-control mr-0" type="search" value="{{ request.GET.q }}" name="q"
+                                   placeholder="Поиск" aria-label="Search">
+                        </form>
+                        {% if request.user.is_authenticated %}
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link aria-current='page'" href="{% url 'users:logout' %}">Выйти</a>
+                                </li>
+                            </ul>
+                        {% else %}
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link aria-current='page'" href="{% url 'users:login' %}">Войти</a>
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+            <div class="breadcrumb border-bottom">Здесь / будут / хлебные / крошки</div>
+        {% endblock %}
+        <main class="container">
+            <!-- from here to -->
+            <h4 class="my-3">
+                {% if request.GET.q is not null %}
+                    Результат поиска по "{{ request.GET.q }}"
+                {% endif %}
+            </h4>
+            {% block content %}{% endblock content %}
+        </main>
     </div>
-  </div>
-  <!-- Option 1: Bootstrap Bundle with Popper -->
-  <script src="{% static "js/bootstrap.bundle.min.js" %}"></script> 
+</div>
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
 </body>
 </html>
