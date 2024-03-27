@@ -1,14 +1,17 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, PostFile
+from .models import Post, PostFile, Category
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from taggit.models import Tag
 from django.db.models import Count
 from django.db.models import Q
+
 import uuid
 
 
 def post_list(request, tag_slug=None):
     posts = Post.published.all()
+    category = Category.objects.all()
+    print(category)
     tag = None
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
@@ -30,7 +33,7 @@ def post_list(request, tag_slug=None):
         # If page is out of range deliver last page of results
         posts = paginator.page(paginator.num_pages)
 
-    return render(request, 'post_list.html', {'posts': posts, page: 'pages', 'tag': tag})
+    return render(request, 'post_list.html', {'posts': posts, page: 'pages', 'tag': tag, 'category': category})
 
 
 def post_detail(request, post):
