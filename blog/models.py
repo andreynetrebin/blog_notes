@@ -4,13 +4,16 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 from ckeditor_uploader.fields import RichTextUploadingField
-from taggit.managers import TaggableManager
+# from taggit.managers import TaggableManager
+from django.utils.text import slugify
+from .utils import post_get_unique_slug, category_get_unique_slug
+# from django_ckeditor_6.fields import CKEditor6Field
 
 
 # creating model manager
-class PublishedManager(models.Manager):
-    def get_queryset(self):
-        return super(PublishedManager, self).get_queryset().filter(status='published')
+# class PublishedUserManager(models.Manager):
+#     def get_queryset(self, user):
+#         return super(PublishedUserManager, self).get_queryset().filter(author=user).filter(status="published")
 
 
 # post model
@@ -20,18 +23,16 @@ class Post(models.Model):
         ('published', 'Published'),
     )
     title = models.CharField(max_length=250, verbose_name='Название')
-    slug = models.SlugField(max_length=250, unique_for_date='publish')
-    category = TreeForeignKey('Category', on_delete=models.PROTECT, related_name='posts', verbose_name='Категория')
+    slug = models.SlugField(max_length=250, blank=True, null=True)
+    category = TreeForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
     body = RichTextUploadingField(verbose_name='Содержание')
-
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
-    image = models.ImageField(upload_to='featured_image/%Y/%m/%d/')
-    tags = models.ManyToManyField('Tag', blank=True)
+    image = models.ImageField(upload_to='featured_image/%Y/%m/%d/',  default='featured_image/default.jpg',)
+    # tags = models.ManyToManyField('Tag', blank=True)
 
     class Meta:
         ordering = ('-publish',)
@@ -41,12 +42,20 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
-    objects = models.Manager()  # The default manager.
-    published = PublishedManager()  # Our custom manager.
-    tags = TaggableManager()
+    # objects = models.Manager()  # The default manager.
+
+
+    def save(self, *args, **kwargs):
+        post_get_unique_slug(self)
+        super(Post, self).save(*args, **kwargs)
+
 
     def get_absolute_url(self):
-        return reverse('blog:post_detail', args=[self.slug])
+      kwargs = {
+        'slug': self.slug
+      }
+      return reverse('blog:item-detail', kwargs=kwargs)
+
 
 
 class PostFile(models.Model):
@@ -59,10 +68,12 @@ class PostFile(models.Model):
 
 
 class Category(MPTTModel):
+    # id=models.AutoField(primary_key=True)
     title = models.CharField(max_length=150, verbose_name='Название')
     parent = TreeForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, related_name='children',
                             db_index=True, verbose_name='Родительская категория')
-    slug = models.SlugField()
+    slug = models.SlugField(blank=True, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_categorires')
 
     class MPTTMeta:
         order_insertion_by = ['title']
@@ -73,7 +84,12 @@ class Category(MPTTModel):
         verbose_name_plural = 'Категории'
 
     def get_absolute_url(self):
-        return reverse('post-by-category', args=[str(self.slug)])
+        return reverse('blog:items-by-category', args=[str(self.slug)])
+
+    def save(self, *args, **kwargs):
+        category_get_unique_slug(self)
+        super(Category, self).save(*args, **kwargs)
+
 
     def __str__(self):
-        return self.title
+        return str(self.title)
