@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load mptt_tags %}
+
+{% block title %}Стартовая страница{% endblock %}
+
+
+    {% block sidebar %}
+
+<h3 class="w3-bar-item">Категории</h3>
+    <ul>
+        {% recursetree categories %}
+        <li>
+        <a href="{{node.get_absolute_url}}" class="w3-bar-item w3-button">{{node.title}}</a>
+        {% if not node.is_leaf_node %}
+                <ul class="children">
+                    {{ children }}
+                </ul>
+        {% endif %}
+        </li>
+        {% endrecursetree %}
+    </ul>
+
+     {% endblock %}
+
+{% block content %}
+{% include "_breadcrumbs.html" with ancestors=category.get_ancestors object=category%}
+
+<!-- <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+	<li class="breadcrumb-item"><a href="/">🏠</a></li>
+	{% for node in ancestors %}
+	<li class="breadcrumb-item"><a href="{{node.get_absolute_url}}">{{node.title}}</a></li>
+    	{% endfor %}
+	<li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+    </ol>
+</nav> -->
+
+    <div class="container-fluid mt-5">
+      <h5>Advanced Double Navigation with fixed SideNav under fixed Navbar:</h5>
+      <br>
+      <p>1. Fixed side menu, hidden on small devices.</p>
+      <p>2. Fixed Navbar. It will always stay visible on the top, even when you scroll down.</p>
+      <div></div>
+    </div>
+
+
+{% endblock %}

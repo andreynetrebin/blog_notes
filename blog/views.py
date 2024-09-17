@@ -1,55 +1,150 @@
 from django.shortcuts import render, get_object_or_404
+from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import PostCreateForm, PostUpdateForm, CategoryCreateForm
 from .models import Post, PostFile, Category
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from taggit.models import Tag
 from django.db.models import Count
 from django.db.models import Q
+from django.urls import reverse_lazy
+
+
+
 
 import uuid
 
 
-def post_list(request, tag_slug=None):
-    posts = Post.published.all()
-    category = Category.objects.all()
-    print(category)
-    tag = None
-    if tag_slug:
-        tag = get_object_or_404(Tag, slug=tag_slug)
-        posts = posts.filter(tags__in=[tag])
-    # search
-    query = request.GET.get("q")
-    if query:
-        posts = Post.published.filter(Q(title__icontains=query) | Q(
-            tags__name__icontains=query)).distinct()
+class CategoryListView(generic.ListView):
+    model = Category
+    template_name = "index.html"
+    context_object_name = 'categories'
 
-    paginator = Paginator(posts, 10)  # 10 posts in each page
-    page = request.GET.get('page')
-    try:
-        posts = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer deliver the first page
-        posts = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range deliver last page of results
-        posts = paginator.page(paginator.num_pages)
+    def get_queryset(self):
+        queryset = Category.objects.filter(author=self.request.user)
+        return queryset
 
-    return render(request, 'post_list.html', {'posts': posts, page: 'pages', 'tag': tag, 'category': category})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['items'] = Post.objects.all()
+        return context
 
 
-def post_detail(request, post):
-    post = get_object_or_404(Post, slug=post, status='published')
-    files = PostFile.objects.filter(post=post)
+class ItemsByCategoryView(generic.ListView):
+    ordering = 'id'
+    paginate_by = 10
+    template_name = 'items_by_category.html'
+    context_object_name = 'posts'
 
-    post_tags_ids = post.tags.values_list('id', flat=True)
-    similar_posts = Post.published.filter(
-        tags__in=post_tags_ids).exclude(id=post.id)
-    similar_posts = similar_posts.annotate(same_tags=Count(
-        'tags')).order_by('-same_tags', '-publish')[:6]
-    # return render(request, 'post_detail.html', {'post': post, 'files': files})
-    return render(request, 'post_detail.html', {'post': post, 'similar_posts': similar_posts, 'files': files})
+    def get_queryset(self):
+        self.category = Category.objects.get(slug=self.kwargs['slug'])
+        self.categories = Category.objects.filter(author=self.request.user)
+        queryset = Post.objects.filter(category=self.category)
+        queryset = queryset.order_by(self.ordering)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['category'] = self.category
+        context['categories'] = self.categories
+        return context
 
 
-# def generate_uuid(request):
-#     print(request)
-#     message_id = uuid.uuid4().hex
-#     return render(request, 'uuid.html', {'uuid': message_id})
+class ItemDetailView(generic.DetailView):
+    model = Post
+    template_name = 'item_detail.html'
+
+
+
+class PostCreateView(generic.CreateView):
+    """
+    Представление: создание материалов на сайте
+    """
+    model = Post
+    template_name = 'posts_create.html'
+    form_class = PostCreateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавление статьи на сайт'
+        return context
+
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+
+class CategoryCreateView(LoginRequiredMixin, generic.CreateView):
+    """
+    Представление: создание материалов на сайте
+    """
+    model = Category
+    template_name = 'categories_create.html'
+    form_class = CategoryCreateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавление категории на сайт'
+        return context
+
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+
+
+class PostUpdateView(generic.UpdateView):
+
+    """
+    Представление: обновления материала на сайте
+    """
+    model = Post
+    template_name = 'posts_update.html'
+    context_object_name = 'post'
+    form_class = PostUpdateForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Обновление статьи: {self.object.title}'
+        return context
+
+    def form_valid(self, form):
+        # form.instance.updater = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+
+class PostDeleteView(generic.DeleteView):
+    """
+    Представление: удаления материала
+    """
+    model = Post
+    success_url = reverse_lazy('blog:category-list')
+    context_object_name = 'post'
+    template_name = 'posts_delete.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Удаление статьи: {self.object.title}'
+        return context
+
+
+
+class SearchResultsView(generic.ListView):
+    model = Post
+    context_object_name = "posts"
+    ordering = 'id'
+    paginate_by = 10
+    template_name = 'search_results.html' 
+    
+    def get_queryset(self): # новый
+        query = self.request.GET.get('q')
+        print(query)
+        return Post.objects.filter(
+            Q(title__icontains=query) | Q(body__icontains=query)
+        )
+

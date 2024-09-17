@@ -1,8 +1,8 @@
-.main {
+/*.main {
     width: 100%;
     display: flex;
     padding: 0px 20px 20px 0px;
-}
+}*/
 
 .sidebar {
     position: fixed;
@@ -19,9 +19,9 @@
 
 .content{
     position: relative;
-    left: 25%;
+    left: 0%;
     max-width: 1300px;
-    width: 70%;
+    width: 55%;
     padding: 0px 0px 0px 0px;
     margin: 0px;
 }
@@ -39,7 +39,7 @@
     z-index: 99;
 }
 
-.breadcrumb {
+/*.breadcrumb {
     position: fixed;
     top: 60.66px;
     height: 39.34px;
@@ -48,7 +48,7 @@
     padding: 0px 0px 0px 10px;
     background-color: #f8f9fa;
     z-index: 99;
-}
+}*/
 
 .content > .container {
     z-index: 1;
