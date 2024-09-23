@@ -3,17 +3,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
-from ckeditor_uploader.fields import RichTextUploadingField
-# from taggit.managers import TaggableManager
-from django.utils.text import slugify
+from django_ckeditor_5.fields import CKEditor5Field
 from .utils import post_get_unique_slug, category_get_unique_slug
-# from django_ckeditor_6.fields import CKEditor6Field
-
-
-# creating model manager
-# class PublishedUserManager(models.Manager):
-#     def get_queryset(self, user):
-#         return super(PublishedUserManager, self).get_queryset().filter(author=user).filter(status="published")
 
 
 # post model
@@ -26,7 +17,7 @@ class Post(models.Model):
     slug = models.SlugField(max_length=250, blank=True, null=True)
     category = TreeForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
-    body = RichTextUploadingField(verbose_name='Содержание')
+    body = CKEditor5Field(verbose_name='Содержание', config_name='extends')
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

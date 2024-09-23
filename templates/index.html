@@ -6,6 +6,8 @@
 
     {% block sidebar %}
 
+
+{% if request.user.is_authenticated %}
 <h3 class="w3-bar-item">Категории</h3>
     <ul>
         {% recursetree categories %}
@@ -20,28 +22,34 @@
         {% endrecursetree %}
     </ul>
 
+                        {% else %}
+                            <h3 class="w3-bar-item">Здесь будут ваши категории</h3>
+
+                        {% endif %}
+
+
+
+
      {% endblock %}
 
 {% block content %}
+
 {% include "_breadcrumbs.html" with ancestors=category.get_ancestors object=category%}
 
-<!-- <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-	<li class="breadcrumb-item"><a href="/">🏠</a></li>
-	{% for node in ancestors %}
-	<li class="breadcrumb-item"><a href="{{node.get_absolute_url}}">{{node.title}}</a></li>
-    	{% endfor %}
-	<li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
-    </ol>
-</nav> -->
-
+{% if request.user.is_authenticated %}
     <div class="container-fluid mt-5">
-      <h5>Advanced Double Navigation with fixed SideNav under fixed Navbar:</h5>
+      <h5>Место для хранения Ваших заметок:</h5>
       <br>
-      <p>1. Fixed side menu, hidden on small devices.</p>
-      <p>2. Fixed Navbar. It will always stay visible on the top, even when you scroll down.</p>
-      <div></div>
+        <p>1. Добавляйте категории.</p>
+        <p>2. Добавляйте заметку по категории.</p>
     </div>
+{% else %}
+    <div class="container-fluid mt-5">
+      <h5>Пройдите процедуру <a href="{% url 'users:register' %}">регистрации</a>, и <a href="{% url 'users:login' %}">авторизуйтесь.</a></h5>
+
+    </div>
+
+{% endif %}
 
 
 {% endblock %}
