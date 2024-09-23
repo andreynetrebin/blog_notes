@@ -4,7 +4,7 @@
 {% block title %}{{object}} detail{% endblock %}
 
 {% block content %}
-{% include "_breadcrumbs2.html" with ancestors=category.get_descendants object=category%}
+{% include "_breadcrumbs.html" with ancestors=category.get_descendants object=category%}
 <figure>
     <img src="{{ object.image.url }}" class="img-fluid" alt="{{object.title}}" style="max-width:20%;">
 </figure>
