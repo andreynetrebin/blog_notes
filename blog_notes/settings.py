@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k=c0p!n-(eyw!4=@$(+9u!nl_q^191^ii-wn=-om*mexloz@#$'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -85,12 +85,12 @@ WSGI_APPLICATION = 'blog_notes.wsgi.application'
 #     }
 # }
 
- DATABASES = {
+DATABASES = {
       'default': {
           'ENGINE': 'django.db.backends.mysql',
           'NAME': 'andreinetrebin89$default',
-          'USER': 'andreinetrebin89',
-          'PASSWORD': '',
+          'USER': os.getenv("MYSQL_USER"),
+          'PASSWORD': os.getenv("MYSQL_PASSWORD"),
           'HOST': 'andreinetrebin89.mysql.pythonanywhere-services.com',
       }
  }
