@@ -3,20 +3,25 @@
 
 {% block title %}{{object}} detail{% endblock %}
 
+
 {% block content %}
-{% include "_breadcrumbs.html" with ancestors=category.get_descendants object=category%}
-<figure>
-    <img src="{{ object.image.url }}" class="img-fluid" alt="{{object.title}}" style="max-width:20%;">
-</figure>
 
-<div class="container">
-        <div class="mt-3">
-            <h3>{{object.title}}</h3>
-        </div>
-        <div class="article-body">
-            {{object.body|safe}} <!-- remove linebreaks -->
-        </div>
-</div>
+        <img src={{ object.image.url }} alt={{ object.title }} width="250"/>
 
+        <strong>{{ object.title }}</strong>
+
+        <p>{{ object.body|safe }}</p>
+
+        <small>{{ object.created }}</small>
+        <small>{{ object.updated }}</small>
+
+        <hr>
+
+        <span>{{ object.category.title }}</span>
 
 {% endblock %}
+
+
+
+
+

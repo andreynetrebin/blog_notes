@@ -9,6 +9,8 @@ from . views import (
 	PostDeleteView,
 	SearchResultsView,
     CategoryCreateView,
+    CategoryUpdateView,
+    CategoryDeleteView,
 	)
 
 
@@ -23,6 +25,8 @@ urlpatterns=[
     path('item/<str:slug>/delete/', PostDeleteView.as_view(), name='posts_delete'),
     path('search/', SearchResultsView.as_view(), name='search_results'),
 	path('categories/create/', CategoryCreateView.as_view(), name='categories_create'),
+	path('category/<str:slug>/update/', CategoryUpdateView.as_view(), name='categories_update'),
+    path('category/<str:slug>/delete/', CategoryDeleteView.as_view(), name='categories_delete'),
 
 
 

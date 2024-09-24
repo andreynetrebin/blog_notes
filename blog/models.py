@@ -59,9 +59,8 @@ class PostFile(models.Model):
 
 
 class Category(MPTTModel):
-    # id=models.AutoField(primary_key=True)
     title = models.CharField(max_length=150, verbose_name='Название')
-    parent = TreeForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, related_name='children',
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children',
                             db_index=True, verbose_name='Родительская категория')
     slug = models.SlugField(blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_categorires')
