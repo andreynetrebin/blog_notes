@@ -21,49 +21,29 @@
 {% block content %}
 
 {% include "_breadcrumbs.html" with ancestors=category.get_ancestors object=category%}
-
+<a href="{% url 'blog:categories_update' slug=category.slug %}" class="btn btn-warning">Редактировать категорию</a>
+<a href="{% url 'blog:categories_delete' slug=category.slug %}" class="btn btn-danger">Удалить категорию</a>
+<br>
+<br>
 <div>
     {% for post in posts %}
-<!--         <div class="card mb-3">
-            <div class="card-body">
-                <div class="row g-0">
-                    <div class="col-md-2">
-                        <div class="ratio ratio-16x9">
-                            <img src="{{ post.image.url }}" class="img-fluid" alt="{{post.title}}" style="max-width:80%;">
-                        </div>
-                    </div>
-                    <div class="col-md-17 ps-md-3 pt-3 pt-md-0 d-flex flex-column">
-
-                        <h2 class="card-title h5">
-                            <a href="{{ post.get_absolute_url }}">
-                                {{ post.title }}
-                            </a>
-                        </h2>
-
-                        <p class="card-text mb-auto py-2">{{ post.body|safe|striptags|truncatechars:100 }}</p>
-
-                        <div>
-                            <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm">Ещё</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
-    <div class="card mb-3">
+    <div class="card mb-3" style="width: 100rem;">
         <div class="row">
-            <div class="col-4">
+            <div class="col-2">
                 <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
             </div>
-            <div class="col-8">
+            <div class="col-6">
                 <div class="card-body">
                     <h5 class="card-title">{{ post.title }}</h5>
-                    <div class="card-subtitle">{{ post.author.username }}</div>
-                    <p class="card-text">{{ post.body|safe|striptags|truncatechars:100 }}</p>
-                    <a href="#" class="btn btn-primary">{{ post.category.title }}</a>
-                    <a href="{% url 'blog:posts_update' slug=post.slug %}" class="btn btn-primary">Редактировать</a>
-
+                    <div class="card-subtitle">{{ post.publish }}</div>
+                    <p class="card-text">{{ post.body|safe|striptags|truncatechars:1000 }}</p>
+                    <div>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm">Открыть</a>
+                    </div>
+                    <br>
+                    <a href="{% url 'blog:posts_update' slug=post.slug %}" class="btn btn-warning">Редактировать</a>
+                    <a href="{% url 'blog:posts_delete' slug=post.slug %}" class="btn btn-danger">Удалить</a>
+                    
                   </div>
                 </div>
             </div>

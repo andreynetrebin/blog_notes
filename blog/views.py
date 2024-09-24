@@ -1,9 +1,17 @@
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import PostCreateForm, PostUpdateForm, CategoryCreateForm
-from .models import Post, Category
+from .forms import PostCreateForm, PostUpdateForm, CategoryCreateForm, CategoryUpdateForm
+from .models import Post, PostFile, Category
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
 from django.db.models import Q
 from django.urls import reverse_lazy
+
+
+
+
+import uuid
 
 
 class CategoryListView(generic.ListView):
@@ -12,12 +20,12 @@ class CategoryListView(generic.ListView):
     context_object_name = 'categories'
 
     def get_queryset(self):
-
+        
         if self.request.user.is_anonymous:
             queryset = None
         else:
             queryset = Category.objects.filter(author=self.request.user)
-
+            
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -52,6 +60,7 @@ class ItemDetailView(generic.DetailView):
     template_name = 'item_detail.html'
 
 
+
 class PostCreateView(generic.CreateView):
     """
     Представление: создание материалов на сайте
@@ -64,6 +73,7 @@ class PostCreateView(generic.CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Добавление статьи на сайт'
         return context
+
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -84,13 +94,16 @@ class CategoryCreateView(LoginRequiredMixin, generic.CreateView):
         context['title'] = 'Добавление категории на сайт'
         return context
 
+
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.save()
         return super().form_valid(form)
 
 
+
 class PostUpdateView(generic.UpdateView):
+
     """
     Представление: обновления материала на сайте
     """
@@ -110,6 +123,44 @@ class PostUpdateView(generic.UpdateView):
         return super().form_valid(form)
 
 
+class CategoryUpdateView(generic.UpdateView):
+
+    """
+    Представление: обновления материала на сайте
+    """
+    model = Category
+    template_name = 'categories_update.html'
+    context_object_name = 'category'
+    form_class = CategoryUpdateForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Обновление категории: {self.object.title}'
+        return context
+
+    def form_valid(self, form):
+        # form.instance.updater = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+
+
+class CategoryDeleteView(generic.DeleteView):
+    """
+    Представление: удаления материала
+    """
+    model = Category
+    success_url = reverse_lazy('blog:category-list')
+    context_object_name = 'category'
+    template_name = 'categories_delete.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Удаление категории: {self.object.title}'
+        return context
+
+
+
 class PostDeleteView(generic.DeleteView):
     """
     Представление: удаления материала
@@ -125,17 +176,19 @@ class PostDeleteView(generic.DeleteView):
         return context
 
 
+
 class SearchResultsView(generic.ListView):
     model = Post
     context_object_name = "posts"
     ordering = 'id'
     paginate_by = 10
-    template_name = 'search_results.html'
-
-    def get_queryset(self):  # новый
+    template_name = 'search_results.html' 
+    
+    def get_queryset(self): # новый
         query = self.request.GET.get('q')
         print(query)
         return Post.objects.filter(
             Q(title__icontains=query) | Q(body__icontains=query)
         )
+
 

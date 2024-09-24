@@ -41,6 +41,8 @@ class CategoryCreateForm(forms.ModelForm):
         Обновление стилей формы под Bootstrap
         """
         super().__init__(*args, **kwargs)
+        # if user is not None:
+        #     self.fields['parent'].queryset = Category.objects.filter(author=user)
 
         for field in self.fields:
             self.fields[field].widget.attrs.update({
@@ -57,7 +59,8 @@ class PostUpdateForm(PostCreateForm):
     """
     class Meta:
         model = Post
-        fields = PostCreateForm.Meta.fields + ('publish',)
+        # fields = PostCreateForm.Meta.fields + ('publish',)
+        fields = PostCreateForm.Meta.fields
 
     def __init__(self, *args, **kwargs):
         """
@@ -74,3 +77,26 @@ class PostUpdateForm(PostCreateForm):
         # self.fields['publish'].widget.attrs.update({'class': 'form-check-input'})
         self.fields['body'].widget.attrs.update({'class': 'form-control django_ckeditor_5'})
         self.fields['body'].required = False
+
+
+class CategoryUpdateForm(CategoryCreateForm):
+    """
+    Форма обновления статьи на сайте
+    """
+    class Meta:
+        model = Category
+        # fields = PostCreateForm.Meta.fields + ('publish',)
+        fields = CategoryCreateForm.Meta.fields
+
+    def __init__(self, *args, **kwargs):
+        """
+        Обновление стилей формы под Bootstrap
+        """
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })        
+
