@@ -27,6 +27,7 @@
 <br>
 <div>
     {% for post in posts %}
+
     <div class="card mb-3" style="width: 100rem;">
         <div class="row">
             <div class="col-2">
@@ -34,7 +35,12 @@
             </div>
             <div class="col-6">
                 <div class="card-body">
-                    <h5 class="card-title">{{ post.title }}</h5>
+                        <h2 class="card-title h5">
+                                <a href="{{ post.get_absolute_url }}">
+                                {{ post.title }}
+                                </a>
+                        </h2>
+
                     <div class="card-subtitle">{{ post.publish }}</div>
                     <p class="card-text">{{ post.body|safe|striptags|truncatechars:1000 }}</p>
                     <div>

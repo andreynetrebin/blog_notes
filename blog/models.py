@@ -3,9 +3,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
-from django_ckeditor_5.fields import CKEditor5Field
 from .utils import post_get_unique_slug, category_get_unique_slug
-
+from ckeditor_uploader.fields import RichTextUploadingField
 
 # post model
 class Post(models.Model):
@@ -17,7 +16,7 @@ class Post(models.Model):
     slug = models.SlugField(max_length=250, blank=True, null=True)
     category = TreeForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
-    body = CKEditor5Field(verbose_name='Содержание', config_name='extends')
+    body = RichTextUploadingField()
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

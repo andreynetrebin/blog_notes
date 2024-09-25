@@ -5,20 +5,21 @@
 
 
 {% block content %}
-
-        <img src={{ object.image.url }} alt={{ object.title }} width="250"/>
+<article>
+        <!-- <img src={{ object.image.url }} alt={{ object.title }} width="250"/> -->
 
         <strong>{{ object.title }}</strong>
 
         <p>{{ object.body|safe }}</p>
 
-        <small>{{ object.created }}</small>
-        <small>{{ object.updated }}</small>
+        <small>Создано:{{ object.created }}</small>
+        <br>
+        <small>Изменено:{{ object.updated }}</small>
 
         <hr>
 
         <span>{{ object.category.title }}</span>
-
+</article>
 {% endblock %}
 
 
